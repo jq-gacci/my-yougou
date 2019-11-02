@@ -15,74 +15,85 @@
       indicator-color="rgba(255,255,255,0.3)"
     >
       <block>
-        <swiper-item v-for="item in 5" :key="item">
-          <img
-            src="https://img11.360buyimg.com/n7/jfs/t1/43621/9/14397/72032/5d7890c5E1c52ae6a/cd4c27dde7f31073.jpg"
-            alt
-          />
+        <swiper-item v-for="item in swiperdata" :key="item.goods_id">
+          <img :src="item.image_src" alt />
         </swiper-item>
       </block>
     </swiper>
 
     <!-- 分类 -->
     <div class="categories">
-      <img src="https://api.zbztb.cn/pyg/icon_index_nav_4@2x.png" alt />
-
-      <img src="https://api.zbztb.cn/pyg/icon_index_nav_4@2x.png" alt />
-
-      <img src="https://api.zbztb.cn/pyg/icon_index_nav_4@2x.png" alt />
-
-      <img src="https://api.zbztb.cn/pyg/icon_index_nav_4@2x.png" alt />
+      <img v-for="item in catitems" :key="item.name" :src="item.image_src" alt />
     </div>
 
     <!-- 楼层 -->
     <ul class="floor">
-      <li>
-        <img src="https://api.zbztb.cn/pyg/pic_floor01_title.png" alt />
-      </li>
-      <div class="product-list">
-        <img src="https://api.zbztb.cn/pyg/pic_floor01_1@2x.png" alt />
-        <div class="right">
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
+      <li v-for="(item,index) in floordata" :key="index">
+        <img :src="item.floor_title.image_src" alt />
+        <div class="product-list">
+          <img :src="item.product_list[0].image_src" alt />
+          <div class="right">
+            <block v-for="(item1,index1) in item.product_list" :key="item1.name">
+              <img v-if="index1" :src="item1.image_src" alt />
+            </block>
+          </div>
         </div>
-      </div>
-    </ul>
-    <ul class="floor">
-      <li>
-        <img src="https://api.zbztb.cn/pyg/pic_floor01_title.png" alt />
       </li>
-      <div class="product-list">
-        <img src="https://api.zbztb.cn/pyg/pic_floor01_1@2x.png" alt />
-        <div class="right">
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-        </div>
-      </div>
-    </ul>
-    <ul class="floor">
-      <li>
-        <img src="https://api.zbztb.cn/pyg/pic_floor01_title.png" alt />
-      </li>
-      <div class="product-list">
-        <img src="https://api.zbztb.cn/pyg/pic_floor01_1@2x.png" alt />
-        <div class="right">
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-          <img src="https://api.zbztb.cn/pyg/pic_floor01_2@2x.png" alt />
-        </div>
-      </div>
     </ul>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      //轮播图数据
+      swiperdata: [],
+      //分类列表
+      catitems: [],
+      //楼层列表
+      floordata: []
+    };
+  },
+  //页面第一次加载就写在这里
+  onLoad() {
+    //调用轮播图
+    this.getSwiperdata();
+    //调用分类列表
+    this.getCatitems();
+    //调用楼层列表
+    this.getFloordata();
+  },
+  methods: {
+    //请求轮播图数据
+    getSwiperdata() {
+      this.$request({
+        url: "/api/public/v1/home/swiperdata"
+      }).then(data => {
+        // console.log(data);
+        this.swiperdata = data.data.message;
+      });
+    },
+    //请求分类列表
+    getCatitems() {
+      this.$request({
+        url: "/api/public/v1/home/catitems"
+      }).then(data => {
+        // console.log(data);
+        this.catitems = data.data.message;
+      });
+    },
+    //请求楼层数据
+    getFloordata() {
+      this.$request({
+        url: "/api/public/v1/home/floordata"
+      }).then(data => {
+        console.log(data);
+        this.floordata = data.data.message;
+      });
+    }
+  }
+};
 </script>
 
 <style lang="less">
