@@ -6,22 +6,25 @@
       <div class="left">
         <ul>
           <li
-            v-for="(item,index) in 20"
-            :key="index"
+            v-for="(cate1,index) in categories"
+            :key="cate1.cat_id"
             @click="activeIndex=index"
             :class="{active:activeIndex===index}"
-          >大家电</li>
+          >{{cate1.cat_name}}</li>
         </ul>
       </div>
-      <div class="right">
-        <img src="../../../static/images/titleImage.png" alt="">
-        <ul v-for="(item1, index1) in 4" :key="index1">
-          <li class="cate2">
-            <p class="title">/<span>电视</span>/</p>
+      <div class="right" v-if="isInit">
+        <img src="../../../static/images/titleImage.png" alt />
+        <ul>
+          <li class="cate2" v-for="cate2 in categories[activeIndex].children" :key="cate2.cat_id">
+            <p class="title">
+              /
+              <span>{{cate2.cat_name}}</span>/
+            </p>
             <ul>
-              <li class="cate3" v-for="(item,index) in 9" :key="index">
-                <img src="https://api.zbztb.cn/full/2fb113b32f7a2b161f5ee4096c319afedc3fd5a1.jpg" alt="">
-                <p>曲面电视</p>
+              <li class="cate3" v-for="(cate3,index3) in cate2.children" :key="cate3.cat_id" @click="toList(cate3.cat_name)">
+                <img :src="cate3.cat_icon" alt />
+                <p>{{cate3.cat_name}}</p>
               </li>
             </ul>
           </li>
@@ -39,8 +42,29 @@ export default {
   },
   data() {
     return {
-      activeIndex: 0
+      categories: [],
+      activeIndex: 0,
+      isInit: false
     };
+  },
+  onLoad() {
+    this.getCategories();
+  },
+  methods: {
+    // 请求轮播图数据
+    getCategories() {
+      this.$request({
+        url: "/api/public/v1/categories"
+      }).then(data => {
+        console.log(data);
+        this.categories = data.data.message;
+        this.isInit = true;
+      });
+    },
+      // 跳转到list页面
+    toList (name) {
+      wx.navigateTo({ url: '/pages/list/main?keyword=' + name })
+    }
   }
 };
 </script>
@@ -82,42 +106,43 @@ export default {
     }
   }
 }
-.right{
-  flex:1;
+.right {
+  flex: 1;
   overflow: scroll;
   padding: 20rpx 16rpx;
   box-sizing: border-box;
   height: 100%;
-  >img{
+  > img {
     width: 520rpx;
     height: 180rpx;
   }
-  .title{
+  .title {
     height: 110rpx;
     color: #e0e0e0;
     text-align: center;
     line-height: 110rpx;
+    //margin-top: 40rpx;
 
-    span{
-      color:#333;
+    span {
+      color: #333;
       margin: 0 30rpx;
     }
   }
-  .cate2>ul{
-display: flex;
-flex-wrap: wrap;
-   .cate3{
-     width: 33.33%;
-text-align: center;
-margin-top: 40rpx;
-     img{
-       width: 120rpx;
-       height: 120rpx;
-     }
-   }
-   p{
-     margin-top: 14rpx;
-   }
+  .cate2 > ul {
+    display: flex;
+    flex-wrap: wrap;
+    .cate3 {
+      width: 33.33%;
+      text-align: center;
+      margin-top: 40rpx;
+      img {
+        width: 120rpx;
+        height: 120rpx;
+      }
+    }
+    p {
+      margin-top: 14rpx;
+    }
   }
 }
 </style>
