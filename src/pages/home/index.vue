@@ -1,11 +1,6 @@
 <template>
   <div class="container">
-    <div class="search-hotspot">
-      <div>
-        <icon type="search" size="18" color="#bbb"></icon>
-        <span>搜索</span>
-      </div>
-    </div>
+    <TopBar></TopBar>
     <!-- 轮播图 -->
     <swiper
       indicator-dots
@@ -44,7 +39,11 @@
 </template>
 
 <script>
+import TopBar from '@/components/topbar'
 export default {
+  components:{
+    TopBar
+  },
   data() {
     return {
       //轮播图数据
@@ -88,7 +87,7 @@ export default {
       this.$request({
         url: "/api/public/v1/home/floordata"
       }).then(data => {
-        console.log(data);
+       // console.log(data);
         this.floordata = data.data.message;
       });
     }
