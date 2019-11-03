@@ -41,6 +41,13 @@
 					"id": -1,
 					"name": "分类",
 					"pathName": "pages/category/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "list",
+					"pathName": "pages/list/main",
 					"scene": null
 				}
 			]
